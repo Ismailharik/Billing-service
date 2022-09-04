@@ -17,13 +17,17 @@ public class InvoiceRestController {
     public InvoiceResponseDTO getInvoice(@PathVariable(name = "id")String invoiceId){
         return invoiceService.getInvoice(invoiceId);
     }
-    @GetMapping(path = "/invoices/{customerId}")
+    @GetMapping(path = "/invoicesByCustomer/{customerId}")
     public List<InvoiceResponseDTO> getInvoicesCustomer(@PathVariable String customerId){
         return invoiceService.invoiceByCustomerId(customerId);
     }
     @PostMapping("/invoices")
     public InvoiceResponseDTO save(@RequestBody InvoiceRequestDTO invoiceRequestDTO){
-
         return invoiceService.save(invoiceRequestDTO);
+    }
+    @GetMapping(path = "/invoices")
+    public List<InvoiceResponseDTO> allInvoices(){
+
+        return invoiceService.allInvoices();
     }
 }

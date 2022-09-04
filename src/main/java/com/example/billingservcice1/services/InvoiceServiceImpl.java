@@ -43,7 +43,6 @@ public class InvoiceServiceImpl implements InvoiceService {
             return invoiceMapper.fromInvoice(savedInvoice);
 
         }catch (Exception e){
-            System.out.println(22222222222222222222222222222222D);
             System.out.println(e.getMessage());
         }
         return null;
@@ -61,7 +60,36 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public List<InvoiceResponseDTO> invoiceByCustomerId(String customerId) {
         List<Invoice> invoices = invoiceRepository.findByCustomerId(customerId);
+        for (Invoice inv : invoices){
+            try{
+                Customer customer=customerRestClient.getCustomer(inv.getCustomerId());
+                inv.setCustomer(customer);
+
+            }catch (Exception e){
+                System.out.println("CUSTOMER NOT FOUND +++++++++++++++");
+                System.out.println(e.getMessage());
+            }
+        }
         return invoices.stream().map(invoice -> invoiceMapper.fromInvoice(invoice)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<InvoiceResponseDTO> allInvoices() {
+        List<Invoice> invoices = invoiceRepository.findAll();
+        for (Invoice inv : invoices){
+            try{
+
+            Customer customer=customerRestClient.getCustomer(inv.getCustomerId());
+            inv.setCustomer(customer);
+
+            }catch (Exception e){
+                System.out.println("CUSTOMER NOT FOUND +++++++++++++++");
+                System.out.println(e.getMessage());
+            }
+        }
+
+        List<InvoiceResponseDTO> invoiceResponseDTOS = invoices.stream().map(invoice -> invoiceMapper.fromInvoice(invoice)).collect(Collectors.toList());
+        return invoiceResponseDTOS;
     }
 }
 
